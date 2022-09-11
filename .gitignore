@@ -27,4 +27,10 @@ hs_err_pid*
 .project
 .settings/
 target/
-.idea
+.idea/
+.iml
+
+*/target/
+*/.idea/
+*/.iml
+/groovy/example-groovy/.idea/

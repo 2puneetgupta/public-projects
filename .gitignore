@@ -31,6 +31,17 @@ target/
 .iml
 
 */target/
+*/*/target/
 */.idea/
 */.iml
 /groovy/example-groovy/.idea/
+/spring-boot/comhellowordTaskSchedulerCron/comhellowordTaskSchedulerCron.iml
+/.idea/
+/*.iml
+/*/*.iml
+/*/*/*.iml
+/groovy/example-groovy/target/
+/*/*/target/
+/target/
+/*/target/
+/groovy/example-groovy/example-groovy.iml

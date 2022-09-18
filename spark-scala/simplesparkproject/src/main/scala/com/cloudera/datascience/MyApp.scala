@@ -11,7 +11,7 @@ import org.apache.spark.SparkContext
 
 object MyApp {
   def main(args: Array[String]) {
-    val sc = new SparkContext(new SparkConf().setAppName("My App"))
+    val sc = new SparkContext(new SparkConf().setAppName("My App").setMaster("local"))
     println("num lines: " + countLines(sc, args(0)))
   }
 

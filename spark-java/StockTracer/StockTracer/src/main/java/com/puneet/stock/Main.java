@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static  Double amount= 10000.0;
-    public static int  profitPc = 20;
+    public static int  profitPc = 4;
     public static String user_day_price = "close";
     //Receive Rule from user
 
@@ -24,32 +24,55 @@ public class Main {
         long startTime = System.currentTimeMillis();
 
         ArrayList<String> stocksNames =  getStockList();
-        for(String currentStockname : stocksNames) {
+        resetTransactionAndPortfolio();
+        stocksNames.parallelStream().forEach(currentStockname -> {
+       // for(String currentStockname : stocksNames) {
             //String currentStockname = "file:///D:/stockData/APOLLOHOSP.NS.csv";
             LocalDate currentDate = LocalDate.parse("2020-11-20");
             System.out.println("Started simulation for : " + currentStockname);
+            amount= 10000.0;
 
             //Rule - buy 10% down Sell 10% up from avg price
 
 
-            resetTransactionAndPortfolio();
-
-            Double priceFortheday = getPriceFortheday(currentStockname, Date.valueOf(currentDate));
+            Double priceFortheday = null;
+            try {
+                priceFortheday = getPriceFortheday(currentStockname, Date.valueOf(currentDate));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println(priceFortheday);
-            updateTransaction(currentStockname, Date.valueOf(currentDate), priceFortheday, 1, "B");
-            updateCurrentHolding(currentStockname, priceFortheday, 1);
+            try {
+                updateTransaction(currentStockname, Date.valueOf(currentDate), priceFortheday, 1, "B");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                updateCurrentHolding(currentStockname, priceFortheday, 1);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
 
             while (amount > 0 && currentDate.isBefore(LocalDate.now().minusYears(2))) {
                 currentDate = currentDate.plusDays(1);
-                simulateBuySellPercentMove(currentStockname, currentDate);
+                try {
+                    simulateBuySellPercentMove(currentStockname, currentDate);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
-            Double profit = calculateProfit(currentStockname);
+            Double profit = null;
+            try {
+                profit = calculateProfit(currentStockname);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             System.out.println("profit : " + profit);
             long endTime = System.currentTimeMillis();
             System.out.println("Time taken" + (endTime - startTime));
-        }
+        });
      }
 
     private static ArrayList<String> getStockList() throws SQLException {
